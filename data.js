@@ -59,7 +59,8 @@ const MENU_DATA = {
     { id: 36, name: "おしぼり", price: 0, img: "🧻", desc: "無料" },
   ],
   "飲み放題": [
-    { id: 37, name: "飲み放題（90分）", price: 1500, img: "🍻", desc: "全アルコール対象" },
+    { id: 37, name: "飲み放題（90分）", price: 1500, img: "🍻", desc: "全アルコール対象", nomihodaiMinutes: 90 },
+    { id: 38, name: "飲み放題（120分）", price: 2000, img: "🍻", desc: "全アルコール対象", nomihodaiMinutes: 120 },
   ],
 };
 

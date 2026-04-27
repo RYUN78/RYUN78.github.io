@@ -1,0 +1,613 @@
+/* ===========================
+   リセット・ベース
+=========================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  height: 100%;
+  height: -webkit-fill-available;
+}
+
+body {
+  min-height: 100%;
+  min-height: 100dvh;
+  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+#app {
+  width: 100%;
+  width: 100dvw;
+  min-height: 100dvh;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===========================
+   共通画面
+=========================== */
+.screen {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===========================
+   入店画面 (Slide 1)
+=========================== */
+.screen-checkin {
+  align-items: center;
+  justify-content: center;
+  gap: 5dvh;
+  padding: 5dvh 8dvw;
+  background: #fff;
+  flex: 1;
+}
+.checkin-title {
+  font-size: clamp(18px, 5.5vw, 26px);
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+}
+.checkin-subtitle {
+  font-size: clamp(13px, 3.8vw, 17px);
+  color: #555;
+  text-align: center;
+}
+.checkin-row {
+  display: flex;
+  align-items: center;
+  gap: 4vw;
+}
+.checkin-label {
+  width: 12vw;
+  font-size: clamp(13px, 3.8vw, 17px);
+}
+.count-box {
+  width: 14vw;
+  height: 11vw;
+  max-width: 64px;
+  max-height: 48px;
+  border: 1.5px solid #aaa;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(16px, 4.5vw, 22px);
+  font-weight: 600;
+}
+
+/* ===========================
+   ボタン共通
+=========================== */
+.round-btn {
+  width: clamp(32px, 9vw, 44px);
+  height: clamp(32px, 9vw, 44px);
+  border-radius: 50%;
+  border: 1.5px solid #888;
+  background: #fff;
+  font-size: clamp(16px, 4.5vw, 22px);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.1s;
+  flex-shrink: 0;
+}
+.round-btn:active { background: #eee; }
+.round-btn.lg {
+  width: clamp(40px, 12vw, 56px);
+  height: clamp(40px, 12vw, 56px);
+  font-size: clamp(20px, 5.5vw, 26px);
+}
+
+.primary-btn {
+  background: #3a3a3a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: clamp(10px, 3vw, 15px) clamp(20px, 6vw, 32px);
+  font-size: clamp(14px, 4vw, 18px);
+  font-weight: 600;
+  cursor: pointer;
+  min-width: clamp(100px, 28vw, 140px);
+  transition: background 0.15s;
+}
+.primary-btn:active { background: #222; }
+.primary-btn.disabled { background: #bbb; cursor: default; }
+
+.secondary-btn {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: clamp(10px, 3vw, 15px) clamp(18px, 5.5vw, 30px);
+  font-size: clamp(13px, 3.8vw, 17px);
+  font-weight: 500;
+  cursor: pointer;
+  min-width: clamp(90px, 24vw, 120px);
+  transition: background 0.15s;
+}
+.secondary-btn:active { background: #ddd; }
+
+/* ===========================
+   メニュー画面 (Slide 2)
+=========================== */
+.screen-menu {
+  flex-direction: row;
+  height: 100dvh;
+}
+.menu-sidebar {
+  width: clamp(60px, 18vw, 84px);
+  background: #f5f5f5;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.menu-sidebar::-webkit-scrollbar { display: none; }
+
+.cat-tab {
+  padding: clamp(7px, 2.2vw, 12px) 3px;
+  font-size: clamp(9px, 2.5vw, 12px);
+  text-align: center;
+  cursor: pointer;
+  color: #555;
+  border-bottom: 1px solid #e0e0e0;
+  line-height: 1.3;
+  transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.cat-tab:active { background: #e0e0e0; }
+.cat-tab.active {
+  background: #fff;
+  color: #c0392b;
+  font-weight: 700;
+  border-right: 3px solid #c0392b;
+}
+
+.menu-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.menu-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: clamp(6px, 2vw, 10px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 2vw, 10px);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.menu-items::-webkit-scrollbar { display: none; }
+.menu-items.dimmed { filter: brightness(0.6); pointer-events: none; }
+
+.menu-item-card {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2.5vw, 14px);
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: clamp(8px, 2.5vw, 13px) clamp(10px, 3vw, 16px);
+  cursor: pointer;
+  transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.menu-item-card:active { background: #f5f5f5; }
+.menu-item-emoji { font-size: clamp(22px, 7vw, 32px); flex-shrink: 0; }
+.menu-item-name { font-size: clamp(12px, 3.5vw, 16px); font-weight: 600; color: #1a1a1a; }
+.menu-item-desc { font-size: clamp(10px, 2.8vw, 13px); color: #888; margin-top: 2px; }
+.menu-item-price { font-size: clamp(11px, 3.2vw, 15px); color: #c0392b; font-weight: 500; margin-top: 3px; }
+
+.menu-footer {
+  display: flex;
+  border-top: 1px solid #ddd;
+  background: #fafafa;
+  flex-shrink: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.footer-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6px, 2vw, 10px) 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #444;
+  border-right: 1px solid #eee;
+  position: relative;
+  transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.footer-btn:last-child { border-right: none; }
+.footer-btn:active { background: #eee; }
+.footer-icon { font-size: clamp(18px, 5.5vw, 26px); }
+.footer-label { font-size: clamp(9px, 2.5vw, 12px); margin-top: 2px; line-height: 1.2; text-align: center; }
+.cart-badge {
+  position: absolute;
+  top: 4px; right: 12px;
+  background: #e74c3c;
+  color: #fff;
+  border-radius: 50%;
+  width: clamp(14px, 4vw, 18px);
+  height: clamp(14px, 4vw, 18px);
+  font-size: clamp(9px, 2.5vw, 11px);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+}
+
+/* ===========================
+   数量選択オーバーレイ (Slide 3)
+=========================== */
+.qty-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.35);
+  z-index: 10;
+}
+.qty-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: clamp(20px, 5vw, 30px) clamp(22px, 6vw, 36px);
+  width: clamp(200px, 60vw, 300px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 3.5vw, 20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.qty-modal-title { font-size: clamp(12px, 3.5vw, 16px); color: #555; }
+.qty-modal-item { font-size: clamp(13px, 3.8vw, 17px); font-weight: 700; color: #1a1a1a; }
+.qty-ctrl { display: flex; align-items: center; gap: clamp(16px, 5vw, 24px); }
+.qty-val {
+  font-size: clamp(24px, 7vw, 34px);
+  font-weight: 700;
+  min-width: clamp(30px, 9vw, 42px);
+  text-align: center;
+}
+.qty-actions { display: flex; gap: clamp(10px, 3vw, 16px); }
+
+/* ===========================
+   カートオーバーレイ (Slide 4)
+=========================== */
+.cart-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: clamp(16px, 4.5vw, 24px);
+  width: clamp(240px, 72vw, 340px);
+  max-height: 70dvh;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 3vw, 14px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.cart-modal-title {
+  font-size: clamp(14px, 4vw, 18px);
+  font-weight: 700;
+  text-align: center;
+  color: #1a1a1a;
+  border-bottom: 1px solid #eee;
+  padding-bottom: clamp(6px, 2vw, 10px);
+}
+.cart-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 2vw, 10px);
+  -webkit-overflow-scrolling: touch;
+}
+.cart-empty { font-size: clamp(12px, 3.5vw, 15px); color: #aaa; text-align: center; padding: 20px; }
+.cart-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(3px, 1vw, 6px) 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.cart-row-name { font-size: clamp(12px, 3.5vw, 15px); color: #1a1a1a; flex: 1; }
+.cart-qty-ctrl { display: flex; align-items: center; gap: clamp(6px, 2vw, 10px); }
+.qty-btn {
+  width: clamp(24px, 7vw, 30px);
+  height: clamp(24px, 7vw, 30px);
+  border-radius: 50%;
+  border: 1px solid #bbb;
+  background: #fff;
+  font-size: clamp(12px, 3.5vw, 16px);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.qty-num { font-size: clamp(13px, 3.8vw, 16px); font-weight: 600; min-width: 18px; text-align: center; }
+.cart-actions { display: flex; gap: clamp(8px, 2.5vw, 12px); justify-content: center; }
+
+/* ===========================
+   トースト (Slide 5/6)
+=========================== */
+.toast-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.4);
+  z-index: 10;
+}
+.toast-box {
+  background: rgba(255,255,255,0.97);
+  border-radius: 18px;
+  padding: clamp(24px, 7vw, 40px) clamp(28px, 9vw, 50px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 3vw, 16px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.toast-icon { font-size: clamp(32px, 10vw, 48px); }
+.toast-msg { font-size: clamp(16px, 4.8vw, 22px); font-weight: 700; color: #1a1a1a; text-align: center; line-height: 1.5; }
+
+/* ===========================
+   注文履歴 (Slide 7)
+=========================== */
+.screen-history { padding: 0; background: #f5f5f5; flex: 1; }
+.history-header {
+  background: #3a3a3a;
+  color: #fff;
+  font-size: clamp(16px, 4.5vw, 20px);
+  font-weight: 700;
+  padding: clamp(12px, 3.5vw, 18px) clamp(16px, 5vw, 24px);
+  text-align: center;
+}
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: clamp(8px, 2.5vw, 14px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(5px, 1.5vw, 8px);
+  -webkit-overflow-scrolling: touch;
+}
+.history-empty { font-size: clamp(12px, 3.5vw, 15px); color: #aaa; text-align: center; padding: 40px; }
+.history-row {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 8px;
+  padding: clamp(8px, 2.5vw, 13px) clamp(10px, 3.5vw, 16px);
+  gap: clamp(6px, 2vw, 10px);
+}
+.history-name { flex: 1; font-size: clamp(12px, 3.5vw, 15px); color: #1a1a1a; }
+.history-qty { font-size: clamp(11px, 3.2vw, 14px); color: #555; width: clamp(30px, 9vw, 42px); text-align: right; }
+.history-price { font-size: clamp(11px, 3.2vw, 14px); color: #c0392b; width: clamp(60px, 18vw, 80px); text-align: right; }
+.history-total {
+  display: flex;
+  justify-content: space-between;
+  background: #3a3a3a;
+  color: #fff;
+  padding: clamp(12px, 3.5vw, 16px) clamp(16px, 5vw, 22px);
+  font-size: clamp(13px, 3.8vw, 16px);
+  font-weight: 700;
+  margin: clamp(6px, 2vw, 10px) clamp(8px, 2.5vw, 14px);
+  border-radius: 8px;
+}
+.screen-history .primary-btn {
+  margin: clamp(10px, 3vw, 16px) auto clamp(16px, 5vw, 28px);
+  display: block;
+}
+
+/* ===========================
+   呼び出し・会計 (Slide 8)
+=========================== */
+.screen-call {
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 5vw, 28px);
+  padding: clamp(40px, 12dvh, 80px) clamp(24px, 8vw, 50px);
+  background: #fff;
+  flex: 1;
+}
+.call-big-btn {
+  width: 100%;
+  padding: clamp(18px, 5.5vw, 28px);
+  font-size: clamp(16px, 5vw, 22px);
+  font-weight: 700;
+  border: 2px solid #aaa;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.call-big-btn:active { background: #f0f0f0; }
+.checkout-card {
+  background: #f9f9f9;
+  border: 1.5px solid #ddd;
+  border-radius: 14px;
+  padding: clamp(20px, 6vw, 32px) clamp(16px, 5vw, 28px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 3vw, 16px);
+  align-items: center;
+  text-align: center;
+}
+.checkout-table { font-size: clamp(16px, 4.5vw, 20px); font-weight: 700; color: #333; }
+.checkout-amount { font-size: clamp(18px, 5.5vw, 26px); font-weight: 700; color: #c0392b; }
+.checkout-thanks { font-size: clamp(12px, 3.5vw, 16px); color: #555; line-height: 1.7; }
+
+/* ===========================
+   呼び出し中 (Slide 9)
+=========================== */
+.screen-calling { background: #fff; padding: 0; flex: 1; }
+.calling-title {
+  background: #3a3a3a;
+  color: #fff;
+  font-size: clamp(15px, 4.5vw, 19px);
+  font-weight: 700;
+  padding: clamp(12px, 3.5vw, 16px) clamp(16px, 5vw, 22px);
+  text-align: center;
+}
+.calling-tabs { display: flex; border-bottom: 1px solid #ddd; }
+.calling-tab {
+  flex: 1;
+  padding: clamp(8px, 2.5vw, 12px) 4px;
+  font-size: clamp(9px, 2.8vw, 13px);
+  text-align: center;
+  color: #888;
+  cursor: default;
+}
+.calling-tab.active { color: #1a1a1a; font-weight: 700; border-bottom: 2px solid #3a3a3a; }
+.calling-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 5dvh, 32px);
+  padding: clamp(32px, 10dvh, 70px) clamp(24px, 8vw, 40px);
+}
+.calling-icon { font-size: clamp(56px, 18vw, 90px); }
+.calling-msg {
+  font-size: clamp(14px, 4vw, 18px);
+  color: #333;
+  text-align: center;
+  line-height: 1.8;
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: clamp(16px, 5vw, 24px) clamp(20px, 6vw, 32px);
+}
+.screen-calling .secondary-btn {
+  margin: clamp(16px, 5dvh, 28px) auto clamp(24px, 7dvh, 48px);
+  display: block;
+}
+
+/* ===========================
+   エラー画面 (Slide 11)
+=========================== */
+.screen-error {
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 5vw, 24px);
+  padding: clamp(40px, 12dvh, 80px) clamp(24px, 8vw, 50px);
+  background: #f5f5f5;
+  flex: 1;
+}
+.error-code {
+  font-size: clamp(22px, 6.5vw, 32px);
+  font-weight: 700;
+  color: #888;
+  background: #ddd;
+  padding: clamp(8px, 2.5vw, 13px) clamp(18px, 5.5vw, 28px);
+  border-radius: 8px;
+}
+.error-title { font-size: clamp(16px, 5vw, 22px); font-weight: 700; color: #c0392b; }
+
+/* ===========================
+   タッチ操作改善
+=========================== */
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* エラーメッセージ（入店画面） */
+.checkin-error {
+  display: none;
+  color: #c0392b;
+  font-size: clamp(12px, 3.5vw, 15px);
+  font-weight: 500;
+  background: #fdf0ee;
+  border: 1px solid #e8b4ae;
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-align: center;
+  width: 100%;
+  max-width: 280px;
+}
+
+/* ===========================
+   時計＆ラストオーダーバー（全画面固定）
+=========================== */
+#clock-bar {
+  position: fixed;
+  top: env(safe-area-inset-top, 0px);
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(8px, 3vw, 16px);
+  padding: 4px clamp(10px, 3vw, 16px);
+  background: rgba(30, 30, 30, 0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: none; /* タップ透過 */
+}
+
+#clock-time {
+  font-size: clamp(12px, 3.5vw, 15px);
+  font-weight: 600;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+#clock-lo {
+  font-size: clamp(11px, 3.2vw, 14px);
+  font-weight: 500;
+  color: #b0e0c8;
+  font-variant-numeric: tabular-nums;
+}
+
+#clock-lo.lo-warning {
+  color: #ff9f7a;
+  animation: lo-blink 1s ease-in-out infinite;
+}
+
+@keyframes lo-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+/* clock-bar の高さ分だけ #app を下げる */
+#app {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 28px);
+}
+
+/* 飲み放題タイマー */
+#clock-nh {
+  font-size: clamp(11px, 3.2vw, 14px);
+  font-weight: 600;
+  color: #ffe47a;
+  font-variant-numeric: tabular-nums;
+  border-left: 1px solid rgba(255,255,255,0.2);
+  padding-left: clamp(8px, 2.5vw, 14px);
+}
+
+#clock-nh.nh-warning {
+  color: #ff9f7a;
+  animation: lo-blink 1s ease-in-out infinite;
+}
+
+#clock-nh.nh-ended {
+  color: #aaa;
+}
