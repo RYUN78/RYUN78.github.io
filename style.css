@@ -38,9 +38,10 @@ body {
 =========================== */
 .screen {
   width: 100%;
-  min-height: 100dvh;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* ===========================
@@ -52,7 +53,6 @@ body {
   gap: 5dvh;
   padding: 5dvh 8dvw;
   background: #fff;
-  flex: 1;
 }
 .checkin-title {
   font-size: clamp(18px, 5.5vw, 26px);
@@ -86,6 +86,19 @@ body {
   justify-content: center;
   font-size: clamp(16px, 4.5vw, 22px);
   font-weight: 600;
+}
+.checkin-error {
+  display: none;
+  color: #c0392b;
+  font-size: clamp(12px, 3.5vw, 15px);
+  font-weight: 500;
+  background: #fdf0ee;
+  border: 1px solid #e8b4ae;
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-align: center;
+  width: 100%;
+  max-width: 280px;
 }
 
 /* ===========================
@@ -144,7 +157,9 @@ body {
 =========================== */
 .screen-menu {
   flex-direction: row;
-  height: 100dvh;
+  /* height は .screen の fliex:1 に任せる */
+  height: 100%;
+  overflow: hidden;
 }
 .menu-sidebar {
   width: clamp(60px, 18vw, 84px);
@@ -184,6 +199,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   position: relative;
+  min-width: 0; /* 子要素の幅が親をはみ出すのを防止 */
 }
 .menu-items {
   flex: 1;

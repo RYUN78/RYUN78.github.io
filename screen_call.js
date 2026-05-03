@@ -30,12 +30,6 @@ function screenCalling() {
   return `
     <div class="screen screen-calling">
       <div class="calling-title">店員呼び出し</div>
-      <div class="calling-tabs">
-        <span class="calling-tab active">店員呼出し</span>
-        <span class="calling-tab">お会計</span>
-        <span class="calling-tab">注文履歴</span>
-        <span class="calling-tab">注文</span>
-      </div>
       <div class="calling-body">
         <div class="calling-icon">🧍</div>
         <div class="calling-msg">店員がまいります。<br>しばらくお待ちください。</div>
