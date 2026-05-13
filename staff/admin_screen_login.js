@@ -1,7 +1,7 @@
 // ===========================
 // 共通ヘッダー
 // ===========================
-function adminHeader(title, showSettings = true) {
+function adminHeader(title) {
   return `
     <div class="adm-header">
       <div class="adm-header-title">
@@ -9,7 +9,7 @@ function adminHeader(title, showSettings = true) {
         <span class="adm-subtitle">${title}</span>
       </div>
       <div class="adm-header-icons">
-        ${showSettings ? `<button class="adm-icon-btn" id="btn-settings">⚙️</button>` : ''}
+        <button class="adm-icon-btn" id="btn-settings">⚙️</button>
         <button class="adm-icon-btn" id="btn-bell">🔔</button>
       </div>
     </div>
@@ -46,26 +46,18 @@ function screenLogin() {
 }
 
 function attachLoginEvents() {
-  document.getElementById('btn-login')?.addEventListener('click', async () => {
+  document.getElementById('btn-login')?.addEventListener('click', () => {
     const uid = document.getElementById('input-userid').value.trim();
     const pw  = document.getElementById('input-password').value;
-    if (!uid || !pw) {
-      document.getElementById('login-error').textContent = 'IDとパスワードを入力してください';
+    const user = MOCK_USERS.find(u => u.id === uid && u.password === pw);
+    if (!user) {
+      const el = document.getElementById('login-error');
+      if (el) el.textContent = 'IDまたはパスワードが正しくありません';
       return;
     }
-
-    const res = await ApiAuth.login(uid, pw);
-    if (!res.ok) {
-      document.getElementById('login-error').textContent = 'IDまたはパスワードが正しくありません';
-      return;
-    }
-
-    Auth.setToken(res.data.token);
-    Auth.setRole(res.data.role);
-    adminState.role   = res.data.role;
-    adminState.userId = res.data.userId;
-
-    adminGoto(res.data.role === 'staff' ? 'menu_staff' : 'menu_parttime');
+    adminState.role   = user.role;
+    adminState.userId = uid;
+    adminGoto(user.role === 'staff' ? 'menu_staff' : 'menu_parttime');
   });
 }
 
@@ -88,9 +80,9 @@ function screenMenuStaff() {
 
 function attachMenuStaffEvents() {
   document.getElementById('btn-settings')?.addEventListener('click', () => adminGoto('logout_confirm'));
-  document.getElementById('btn-bell')?.addEventListener('click', () => loadAndGotoStaffCall());
+  document.getElementById('btn-bell')?.addEventListener('click', () => adminGoto('staff_call'));
   document.getElementById('btn-product-add')?.addEventListener('click', () => adminGoto('product_add'));
-  document.getElementById('btn-product-delete')?.addEventListener('click', async () => {
+  document.getElementById('btn-product-delete')?.addEventListener('click', () => {
     adminState.productSearchQuery   = '';
     adminState.productSearchResults = [];
     adminState.selectedProducts     = [];
@@ -118,6 +110,7 @@ function screenMenuParttime() {
         <button class="adm-menu-btn" id="btn-cancel">注文キャンセル</button>
         <button class="adm-menu-btn" id="btn-offer">提供済み変更</button>
         <button class="adm-menu-btn" id="btn-overview">オーダー一覧</button>
+        <button class="adm-menu-btn" id="btn-ledger">顧客台帳</button>
       </div>
     </div>
   `;
@@ -125,7 +118,7 @@ function screenMenuParttime() {
 
 function attachMenuParttimeEvents() {
   document.getElementById('btn-settings')?.addEventListener('click', () => adminGoto('logout_confirm'));
-  document.getElementById('btn-bell')?.addEventListener('click', () => loadAndGotoStaffCall());
+  document.getElementById('btn-bell')?.addEventListener('click', () => adminGoto('staff_call'));
   document.getElementById('btn-table-mgmt')?.addEventListener('click', () => adminGoto('table_mgmt'));
   document.getElementById('btn-soldout')?.addEventListener('click', () => {
     adminState.productSearchQuery   = '';
@@ -142,12 +135,8 @@ function attachMenuParttimeEvents() {
     adminState.offerTableNo = '';
     adminGoto('offer_search');
   });
-  document.getElementById('btn-overview')?.addEventListener('click', async () => {
-    const res = await ApiOrder.getActive(adminState.storeId);
-    if (!res.ok) { showApiError('注文一覧の取得に失敗しました'); return; }
-    adminState.orderList = res.data || [];
-    adminGoto('order_overview');
-  });
+  document.getElementById('btn-overview')?.addEventListener('click', () => adminGoto('order_overview'));
+  document.getElementById('btn-ledger')?.addEventListener('click', () => adminGoto('customer_ledger'));
 }
 
 // ===========================
@@ -157,7 +146,7 @@ function screenLogoutConfirm() {
   return `
     <div class="screen adm-screen">
       ${adminHeader('メニュー管理システム')}
-      <div class="adm-modal-wrap" style="flex:1;align-items:center">
+      <div class="adm-modal-wrap">
         <div class="adm-modal">
           <div class="adm-modal-msg">ログアウトしますか？</div>
           <div class="adm-modal-btns">
@@ -175,20 +164,9 @@ function attachLogoutConfirmEvents() {
     adminGoto(adminState.role === 'staff' ? 'menu_staff' : 'menu_parttime');
   });
   document.getElementById('btn-logout-yes')?.addEventListener('click', () => {
-    Auth.removeToken();
     adminState.role   = null;
     adminState.userId = '';
     adminScreenHistory.length = 0;
     adminGoto('login');
   });
-}
-
-// ===========================
-// 店員呼び出し画面への遷移（API取得付き）
-// ===========================
-async function loadAndGotoStaffCall() {
-  const res = await ApiCall.getAll(adminState.storeId);
-  if (!res.ok) { showApiError('呼び出し一覧の取得に失敗しました'); return; }
-  adminState.callList = res.data || [];
-  adminGoto('staff_call');
 }

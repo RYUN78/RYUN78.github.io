@@ -34,8 +34,9 @@ function adminAttachEvents() {
     case 'offer_confirm':            attachOfferConfirmEvents();         break;
     case 'order_overview':           attachOrderOverviewEvents();        break;
     case 'staff_call':               attachStaffCallEvents();            break;
+    case 'customer_ledger':          attachCustomerLedgerEvents();       break;
   }
 
-  // 🔔 ベルは全画面共通（店員呼び出し通知）
+  // 🔔 ベルは全画面共通
   document.getElementById('btn-bell')?.addEventListener('click', () => adminGoto('staff_call'));
 }

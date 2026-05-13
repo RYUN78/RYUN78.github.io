@@ -4,18 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>みどり亭 管理システム</title>
-  <link rel="stylesheet" href="admin_style.css">
+  <link rel="stylesheet" href="style.css">
+  <!-- JsBarcode: Code128バーコード生成 -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <style>
+    @media print {
+      #global-back-btn, .adm-row-btns { display: none !important; }
+      .adm-qr-wrap { padding: 0; }
+      body { background: white; }
+    }
+  </style>
 </head>
 <body>
-  <!-- 全画面共通：戻るボタン -->
-  <button id="global-back-btn" onclick="adminGoBack()" style="display:none">&#8592;</button>
-
   <div id="app"></div>
 
-  <!-- 状態管理・モックDB・画面遷移 -->
+  <!-- 状態管理・モックDB -->
   <script src="admin_state.js"></script>
 
-  <!-- 各画面テンプレート＋イベント -->
+  <!-- 各画面 -->
   <script src="admin_screen_login.js"></script>
   <script src="admin_screen_product.js"></script>
   <script src="admin_screen_table.js"></script>

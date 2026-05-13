@@ -8,46 +8,34 @@ function productSearchWidget(query, results, selectedIds) {
         placeholder="名前（キーワード）を入れて検索" value="${query}">
       <button class="adm-icon-btn" id="btn-product-search">🔍</button>
     </div>
-    <div class="adm-search-hint">名前（キーワード）入れて検索 → 結果が出てくる</div>
+    <div class="adm-search-hint">名前（キーワード）入れて検索→結果が出てくる</div>
     <div class="adm-result-list" id="product-result-list">
-      ${results.length === 0
-        ? '<div class="adm-empty">検索結果がありません</div>'
-        : results.map(p => `
-          <label class="adm-result-row">
-            <input type="checkbox" class="product-check" value="${p.menu_id}"
-              ${selectedIds.includes(p.menu_id) ? 'checked' : ''}>
-            <span class="${p.sold_out ? 'adm-soldout' : ''}">${p.name}
-              <small style="color:#888"> ¥${p.unit_price}</small>
-            </span>
-          </label>
-        `).join('')}
+      ${results.map(p => `
+        <label class="adm-result-row">
+          <input type="checkbox" class="product-check" value="${p.id}"
+            ${selectedIds.includes(p.id) ? 'checked' : ''}>
+          <span class="${p.soldOut ? 'adm-soldout' : ''}">${p.name}</span>
+        </label>
+      `).join('')}
     </div>
   `;
 }
 
-function attachProductSearchEvent(onResults) {
-  document.getElementById('btn-product-search')?.addEventListener('click', async () => {
+function attachProductSearchEvent() {
+  document.getElementById('btn-product-search')?.addEventListener('click', () => {
     const q = document.getElementById('product-search-input').value.trim();
-    adminState.productSearchQuery = q;
-    const res = await ApiMenu.getAll(adminState.storeId);
-    if (!res.ok) { showApiError('メニューの取得に失敗しました'); return; }
-    adminState.productSearchResults = (res.data || []).filter(p =>
-      !q || p.name.includes(q)
-    );
-    if (onResults) onResults();
-    else adminRender();
+    adminState.productSearchQuery   = q;
+    adminState.productSearchResults = mockProducts.filter(p => p.name.includes(q) || !q);
+    adminRender();
   });
 }
 
-function syncProductCheckboxes() {
+function syncCheckedProducts() {
   document.querySelectorAll('.product-check').forEach(el => {
     el.addEventListener('change', () => {
       const id = parseInt(el.value);
-      if (el.checked) {
-        if (!adminState.selectedProducts.includes(id)) adminState.selectedProducts.push(id);
-      } else {
-        adminState.selectedProducts = adminState.selectedProducts.filter(x => x !== id);
-      }
+      if (el.checked) { if (!adminState.selectedProducts.includes(id)) adminState.selectedProducts.push(id); }
+      else { adminState.selectedProducts = adminState.selectedProducts.filter(x => x !== id); }
     });
   });
 }
@@ -72,18 +60,18 @@ function screenProductAdd() {
         </div>
         <div class="adm-field">
           <label class="adm-label">値段：</label>
-          <input class="adm-input" id="input-product-price" type="number" min="0">
+          <input class="adm-input" id="input-product-price" type="number">
           <span class="adm-required">※ 必須</span>
         </div>
         <div class="adm-field">
-          <label class="adm-label">写真URL：</label>
-          <input class="adm-input" id="input-product-photo" type="text" placeholder="https://...">
+          <label class="adm-label">写真：</label>
+          <input class="adm-input" id="input-product-photo" type="text" placeholder="URL">
           <span class="adm-optional">※ 任意</span>
         </div>
         <div class="adm-error" id="product-add-error"></div>
         <div class="adm-row-btns">
           <button class="adm-btn-secondary" id="btn-product-add-back">戻る</button>
-          <button class="adm-btn-primary"   id="btn-product-add-next">追加</button>
+          <button class="adm-btn-primary" id="btn-product-add-next">追加</button>
         </div>
       </div>
     </div>
@@ -92,17 +80,15 @@ function screenProductAdd() {
 
 function attachProductAddEvents() {
   document.getElementById('btn-settings')?.addEventListener('click', () => adminGoto('logout_confirm'));
+  document.getElementById('btn-bell')?.addEventListener('click', () => adminGoto('staff_call'));
   document.getElementById('btn-product-add-back')?.addEventListener('click', () => adminGoto('menu_staff'));
   document.getElementById('btn-product-add-next')?.addEventListener('click', () => {
     const name  = document.getElementById('input-product-name').value.trim();
     const cat   = document.getElementById('input-product-category').value.trim();
     const price = document.getElementById('input-product-price').value.trim();
-    const photo = document.getElementById('input-product-photo').value.trim();
     const err   = document.getElementById('product-add-error');
-    if (!name || !cat || !price) {
-      if (err) err.textContent = '必須項目を入力してください'; return;
-    }
-    adminState.pendingProduct = { name, category: cat, unitPrice: parseInt(price), photoUrl: photo || null };
+    if (!name || !cat || !price) { if (err) err.textContent = '必須項目を入力してください'; return; }
+    adminState.pendingProduct = { name, category: cat, price: parseInt(price) };
     adminGoto('product_add_confirm');
   });
 }
@@ -124,21 +110,18 @@ function screenProductAddConfirm() {
           <label class="adm-label">カテゴリー：</label>
           <input class="adm-input" type="text" value="${p.category || ''}" disabled>
         </div>
-        <div class="adm-field">
-          <label class="adm-label">値段：</label>
-          <input class="adm-input" type="text" value="¥${p.unitPrice || 0}" disabled>
-        </div>
         <div class="adm-modal-wrap">
           <div class="adm-modal">
             <div class="adm-modal-msg">商品の追加を許可しますか？</div>
             <div class="adm-modal-btns">
               <button class="adm-btn-secondary" id="btn-add-confirm-no">いいえ</button>
-              <button class="adm-btn-primary"   id="btn-add-confirm-yes">はい</button>
+              <button class="adm-btn-primary" id="btn-add-confirm-yes">はい</button>
             </div>
           </div>
         </div>
         <div class="adm-row-btns">
           <button class="adm-btn-secondary" id="btn-add-back2">戻る</button>
+          <button class="adm-btn-primary" id="btn-add-submit">追加</button>
         </div>
       </div>
     </div>
@@ -148,12 +131,14 @@ function screenProductAddConfirm() {
 function attachProductAddConfirmEvents() {
   document.getElementById('btn-settings')?.addEventListener('click', () => adminGoto('logout_confirm'));
   document.getElementById('btn-add-confirm-no')?.addEventListener('click', () => adminGoto('product_add'));
-  document.getElementById('btn-add-confirm-yes')?.addEventListener('click', async () => {
-    const res = await ApiMenu.add({ ...adminState.pendingProduct, storeId: adminState.storeId });
-    if (!res.ok) { showApiError('商品の追加に失敗しました'); return; }
+  document.getElementById('btn-add-confirm-yes')?.addEventListener('click', () => {
+    const p   = adminState.pendingProduct;
+    const newId = Math.max(...mockProducts.map(x => x.id)) + 1;
+    if (p) mockProducts.push({ id: newId, ...p, soldOut: false });
     adminGoto('menu_staff');
   });
   document.getElementById('btn-add-back2')?.addEventListener('click', () => adminGoto('product_add'));
+  document.getElementById('btn-add-submit')?.addEventListener('click', () => adminGoto('product_add_confirm'));
 }
 
 // ===========================
@@ -167,7 +152,7 @@ function screenProductDelete() {
         ${productSearchWidget(adminState.productSearchQuery, adminState.productSearchResults, adminState.selectedProducts)}
         <div class="adm-row-btns">
           <button class="adm-btn-secondary" id="btn-delete-back">戻る</button>
-          <button class="adm-btn-primary"   id="btn-delete-next">削除</button>
+          <button class="adm-btn-primary" id="btn-delete-next">削除</button>
         </div>
       </div>
     </div>
@@ -177,12 +162,12 @@ function screenProductDelete() {
 function attachProductDeleteEvents() {
   document.getElementById('btn-settings')?.addEventListener('click', () => adminGoto('logout_confirm'));
   attachProductSearchEvent();
-  syncProductCheckboxes();
+  syncCheckedProducts();
   document.getElementById('btn-delete-back')?.addEventListener('click', () => adminGoto('menu_staff'));
   document.getElementById('btn-delete-next')?.addEventListener('click', () => {
     const checked = [...document.querySelectorAll('.product-check:checked')].map(el => parseInt(el.value));
     adminState.selectedProducts = checked;
-    if (checked.length === 0) { showApiError('削除する商品を選択してください'); return; }
+    if (checked.length === 0) return;
     adminGoto('product_delete_confirm');
   });
 }
@@ -201,12 +186,13 @@ function screenProductDeleteConfirm() {
             <div class="adm-modal-msg">商品の削除を許可しますか？</div>
             <div class="adm-modal-btns">
               <button class="adm-btn-secondary" id="btn-del-confirm-no">いいえ</button>
-              <button class="adm-btn-primary"   id="btn-del-confirm-yes">はい</button>
+              <button class="adm-btn-primary" id="btn-del-confirm-yes">はい</button>
             </div>
           </div>
         </div>
         <div class="adm-row-btns">
           <button class="adm-btn-secondary" id="btn-delete-back2">戻る</button>
+          <button class="adm-btn-primary" id="btn-delete-submit">削除</button>
         </div>
       </div>
     </div>
@@ -216,15 +202,16 @@ function screenProductDeleteConfirm() {
 function attachProductDeleteConfirmEvents() {
   document.getElementById('btn-settings')?.addEventListener('click', () => adminGoto('logout_confirm'));
   document.getElementById('btn-del-confirm-no')?.addEventListener('click', () => adminGoto('product_delete'));
-  document.getElementById('btn-del-confirm-yes')?.addEventListener('click', async () => {
-    for (const id of adminState.selectedProducts) {
-      const res = await ApiMenu.remove(id);
-      if (!res.ok) { showApiError(`商品ID ${id} の削除に失敗しました`); return; }
-    }
+  document.getElementById('btn-del-confirm-yes')?.addEventListener('click', () => {
+    adminState.selectedProducts.forEach(id => {
+      const idx = mockProducts.findIndex(p => p.id === id);
+      if (idx !== -1) mockProducts.splice(idx, 1);
+    });
     adminState.selectedProducts = [];
     adminGoto('menu_staff');
   });
   document.getElementById('btn-delete-back2')?.addEventListener('click', () => adminGoto('product_delete'));
+  document.getElementById('btn-delete-submit')?.addEventListener('click', () => adminGoto('product_delete_confirm'));
 }
 
 // ===========================
@@ -238,7 +225,7 @@ function screenProductEditSearch() {
         ${productSearchWidget(adminState.productSearchQuery, adminState.productSearchResults, adminState.selectedProducts)}
         <div class="adm-row-btns">
           <button class="adm-btn-secondary" id="btn-edit-search-back">戻る</button>
-          <button class="adm-btn-primary"   id="btn-edit-search-next">次へ</button>
+          <button class="adm-btn-primary" id="btn-edit-search-next">次へ</button>
         </div>
       </div>
     </div>
@@ -248,12 +235,12 @@ function screenProductEditSearch() {
 function attachProductEditSearchEvents() {
   document.getElementById('btn-settings')?.addEventListener('click', () => adminGoto('logout_confirm'));
   attachProductSearchEvent();
-  syncProductCheckboxes();
+  syncCheckedProducts();
   document.getElementById('btn-edit-search-back')?.addEventListener('click', () => adminGoto('menu_staff'));
   document.getElementById('btn-edit-search-next')?.addEventListener('click', () => {
     const checked = [...document.querySelectorAll('.product-check:checked')].map(el => parseInt(el.value));
-    if (checked.length === 0) { showApiError('変更する商品を選択してください'); return; }
-    adminState.editTarget = adminState.productSearchResults.find(p => p.menu_id === checked[0]);
+    if (checked.length === 0) return;
+    adminState.editTarget = mockProducts.find(p => p.id === checked[0]);
     adminGoto('product_edit_form');
   });
 }
@@ -269,21 +256,16 @@ function screenProductEditForm() {
       <div class="adm-body adm-scrollable">
         <div class="adm-change-section">
           <div class="adm-change-label">変更前</div>
-          <div class="adm-change-tag">${t.name || ''} ¥${t.unit_price || ''}</div>
+          <div class="adm-change-tag">${t.name || ''}</div>
         </div>
-        <div class="adm-form">
-          <div class="adm-field">
-            <label class="adm-label">商品名：</label>
-            <input class="adm-input" id="input-edit-name" type="text" value="${t.name || ''}">
-          </div>
-          <div class="adm-field">
-            <label class="adm-label">値段：</label>
-            <input class="adm-input" id="input-edit-price" type="number" value="${t.unit_price || ''}">
-          </div>
+        <div class="adm-change-section" style="margin-top:12px">
+          <div class="adm-change-label">変更後</div>
+          <textarea class="adm-textarea" id="input-edit-after" rows="3"
+            placeholder="変更後の内容を入力"></textarea>
         </div>
         <div class="adm-row-btns">
           <button class="adm-btn-secondary" id="btn-edit-form-back">戻る</button>
-          <button class="adm-btn-primary"   id="btn-edit-form-next">変更</button>
+          <button class="adm-btn-primary" id="btn-edit-form-next">変更</button>
         </div>
       </div>
     </div>
@@ -294,9 +276,8 @@ function attachProductEditFormEvents() {
   document.getElementById('btn-settings')?.addEventListener('click', () => adminGoto('logout_confirm'));
   document.getElementById('btn-edit-form-back')?.addEventListener('click', () => adminGoto('product_edit_search'));
   document.getElementById('btn-edit-form-next')?.addEventListener('click', () => {
-    adminState.editAfterName  = document.getElementById('input-edit-name').value.trim();
-    adminState.editAfterPrice = parseInt(document.getElementById('input-edit-price').value);
-    if (!adminState.editAfterName) { showApiError('商品名を入力してください'); return; }
+    adminState.editAfter = document.getElementById('input-edit-after').value.trim();
+    if (!adminState.editAfter) return;
     adminGoto('product_edit_confirm');
   });
 }
@@ -314,21 +295,18 @@ function screenProductEditConfirm() {
           <div class="adm-change-label">変更前</div>
           <div class="adm-change-tag">${t.name || ''}</div>
         </div>
-        <div class="adm-change-section" style="margin-top:12px">
-          <div class="adm-change-label">変更後</div>
-          <div class="adm-change-tag" style="background:#2e7d32">${adminState.editAfterName || ''} ¥${adminState.editAfterPrice || ''}</div>
-        </div>
         <div class="adm-modal-wrap">
           <div class="adm-modal">
             <div class="adm-modal-msg">商品の変更を許可しますか？</div>
             <div class="adm-modal-btns">
               <button class="adm-btn-secondary" id="btn-edit-confirm-no">いいえ</button>
-              <button class="adm-btn-primary"   id="btn-edit-confirm-yes">はい</button>
+              <button class="adm-btn-primary" id="btn-edit-confirm-yes">はい</button>
             </div>
           </div>
         </div>
         <div class="adm-row-btns">
           <button class="adm-btn-secondary" id="btn-edit-confirm-back">戻る</button>
+          <button class="adm-btn-primary" id="btn-edit-confirm-submit">変更</button>
         </div>
       </div>
     </div>
@@ -338,13 +316,10 @@ function screenProductEditConfirm() {
 function attachProductEditConfirmEvents() {
   document.getElementById('btn-settings')?.addEventListener('click', () => adminGoto('logout_confirm'));
   document.getElementById('btn-edit-confirm-no')?.addEventListener('click', () => adminGoto('product_edit_form'));
-  document.getElementById('btn-edit-confirm-yes')?.addEventListener('click', async () => {
-    const res = await ApiMenu.update(adminState.editTarget.menu_id, {
-      name: adminState.editAfterName,
-      unitPrice: adminState.editAfterPrice,
-    });
-    if (!res.ok) { showApiError('商品の変更に失敗しました'); return; }
+  document.getElementById('btn-edit-confirm-yes')?.addEventListener('click', () => {
+    if (adminState.editTarget) adminState.editTarget.name = adminState.editAfter;
     adminGoto('menu_staff');
   });
   document.getElementById('btn-edit-confirm-back')?.addEventListener('click', () => adminGoto('product_edit_form'));
+  document.getElementById('btn-edit-confirm-submit')?.addEventListener('click', () => adminGoto('product_edit_confirm'));
 }

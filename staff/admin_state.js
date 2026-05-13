@@ -3,17 +3,16 @@
 // ===========================
 const adminState = {
   screen: 'login',
-  role: null,
+  role: null,           // 'staff' | 'parttime'
   userId: '',
-  storeId: 'AA',
 
   // 商品管理
   productSearchQuery: '',
   productSearchResults: [],
   selectedProducts: [],
   editTarget: null,
-  pendingProduct: null,
   editAfter: '',
+  pendingProduct: null,
 
   // テーブル管理
   tableNo: '',
@@ -26,12 +25,66 @@ const adminState = {
   orderNomihoudai: '',
   cancelTableNo: '',
   offerTableNo: '',
+  orderCustomerId: null,
   selectedOrders: [],
   orderList: [],
 
-  // 店員呼び出し
-  callList: [],
+  storeId: 'AA',
 };
+
+// ===========================
+// モックDB（バックエンドなし）
+// ===========================
+const MOCK_USERS = [
+  { id: 'staff01', password: 'pass01', role: 'staff'    },
+  { id: 'part01',  password: 'pass01', role: 'parttime' },
+  { id: 'admin',   password: 'admin',  role: 'staff'    },
+];
+
+const mockProducts = [
+  { id: 1,  name: 'かわ',              category: '焼鳥（塩）',  price: 350, soldOut: false },
+  { id: 2,  name: 'もも',              category: '焼鳥（たれ）', price: 320, soldOut: false },
+  { id: 3,  name: 'ポテトサラダ',      category: '一品',         price: 380, soldOut: false },
+  { id: 4,  name: 'キャベツの塩だれ',  category: '一品',         price: 280, soldOut: false },
+  { id: 5,  name: 'きゅうりの一本漬け',category: '一品',         price: 280, soldOut: false },
+  { id: 6,  name: 'だし巻き',          category: '一品',         price: 420, soldOut: false },
+  { id: 7,  name: '鶏の唐揚げ',        category: '一品',         price: 550, soldOut: false },
+  { id: 8,  name: 'タコのから揚げ',    category: '一品',         price: 480, soldOut: false },
+  { id: 9,  name: 'フライドポテト',    category: '一品',         price: 350, soldOut: true  },
+];
+
+const mockOrders = {
+  '6': [
+    { id: 1, name: 'フライドポテト',    orderQty: 1, offerQty: 1, soldOut: true  },
+    { id: 2, name: 'ポテトサラダ',      orderQty: 2, offerQty: 0, soldOut: false },
+    { id: 3, name: 'キャベツの塩だれ',  orderQty: 1, offerQty: 0, soldOut: false },
+    { id: 4, name: 'きゅうりの一本漬け',orderQty: 1, offerQty: 0, soldOut: false },
+    { id: 5, name: 'だし巻き',          orderQty: 1, offerQty: 0, soldOut: false },
+    { id: 6, name: '鶏の唐揚げ',        orderQty: 1, offerQty: 1, soldOut: true  },
+    { id: 7, name: 'タコのから揚げ',    orderQty: 1, offerQty: 0, soldOut: false },
+  ],
+  '1': [
+    { id: 2, name: 'ポテトサラダ',      orderQty: 1, offerQty: 1, soldOut: false },
+    { id: 3, name: 'きゅうりの一本漬け',orderQty: 1, offerQty: 0, soldOut: false },
+  ],
+};
+
+const mockCalls = [
+  { callId: 1, tableNo: '3',  calledAt: '19:42' },
+  { callId: 2, tableNo: '7',  calledAt: '19:55' },
+  { callId: 3, tableNo: '12', calledAt: '20:03' },
+];
+
+// 顧客台帳モック
+const mockCustomers = [];
+let mockCustomerSeq = 1;
+
+function mockGenCustomerId() {
+  const jst  = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  const date = jst.toISOString().slice(0, 10).replace(/-/g, '');
+  const seq  = String(mockCustomerSeq++).padStart(3, '0');
+  return `${date}-${seq}`;
+}
 
 // ===========================
 // 画面履歴スタック
@@ -98,14 +151,9 @@ function adminRender() {
     case 'offer_confirm':            app.innerHTML = screenOfferConfirm();           break;
     case 'order_overview':           app.innerHTML = screenOrderOverview();          break;
     case 'staff_call':               app.innerHTML = screenStaffCall();              break;
+    case 'customer_ledger':          app.innerHTML = screenCustomerLedger();         break;
     default:                         app.innerHTML = screenLogin();
   }
   adminAttachEvents();
-  updateAdminBackBtn();
 }
 
-function updateAdminBackBtn() {
-  const btn = document.getElementById('global-back-btn');
-  if (!btn) return;
-  btn.style.display = adminCanGoBack() ? 'flex' : 'none';
-}
