@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>龍雲のマイページ（仮）</title>
+  <title>みどり亭</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -228,6 +228,127 @@
       letter-spacing: 0.2em;
       z-index: 1;
     }
+
+    /* =====================
+       レスポンシブ対応
+       ===================== */
+
+    /* タブレット（768px以下） */
+    @media (max-width: 768px) {
+      .emblem {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 18px;
+      }
+      .emblem-inner { font-size: 28px; }
+
+      .subtitle {
+        font-size: 0.68rem;
+        margin-bottom: 32px;
+      }
+
+      .divider { margin-bottom: 32px; }
+
+      .cards { gap: 16px; }
+
+      .card {
+        width: 180px;
+        padding: 28px 20px 24px;
+      }
+
+      .card-icon { font-size: 2rem; margin-bottom: 12px; }
+      .card-label-jp { font-size: 1.1rem; }
+    }
+
+    /* スマホ縦（480px以下） */
+    @media (max-width: 480px) {
+      body { justify-content: center; padding: 24px 0 60px; }
+
+      .emblem {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 14px;
+      }
+      .emblem-inner { font-size: 24px; }
+
+      .subtitle {
+        font-size: 0.6rem;
+        letter-spacing: 0.25em;
+        margin-bottom: 24px;
+      }
+
+      .divider {
+        width: 100px;
+        margin-bottom: 28px;
+      }
+
+      /* カードを縦並びに */
+      .cards {
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        padding: 0 24px;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 320px;
+        /* 縦並びでは横長レイアウトに */
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 20px;
+        text-align: left;
+      }
+
+      /* 角装飾を縦並び時に調整 */
+      .card::after {
+        top: 6px; right: 6px;
+        width: 12px; height: 12px;
+      }
+
+      .card-icon {
+        font-size: 2rem;
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+
+      .card-body { flex: 1; }
+
+      .card-label-jp { font-size: 1rem; margin-bottom: 2px; }
+      .card-label-en { font-size: 0.58rem; margin-bottom: 6px; }
+      .card-desc     { font-size: 0.68rem; }
+
+      footer { font-size: 0.6rem; bottom: 14px; }
+    }
+
+    /* 極小スマホ（360px以下） */
+    @media (max-width: 360px) {
+      .card { padding: 16px; gap: 12px; }
+      .card-icon { font-size: 1.7rem; }
+      .card-label-jp { font-size: 0.95rem; }
+    }
+
+    /* 大画面（1200px以上）でゆったり表示 */
+    @media (min-width: 1200px) {
+      .emblem { width: 110px; height: 110px; }
+      .emblem-inner { font-size: 44px; }
+
+      .subtitle { font-size: 0.82rem; margin-bottom: 56px; }
+      .divider  { width: 200px; margin-bottom: 56px; }
+
+      .cards { gap: 32px; }
+
+      .card {
+        width: 240px;
+        padding: 44px 32px 40px;
+      }
+
+      .card-icon     { font-size: 2.8rem; }
+      .card-label-jp { font-size: 1.4rem; }
+      .card-label-en { font-size: 0.7rem; }
+      .card-desc     { font-size: 0.78rem; }
+    }
   </style>
 </head>
 <body>
@@ -244,28 +365,32 @@
       <span class="emblem-inner">🌿</span>
     </div>
 
-    <h1>龍雲のマイページ（仮）</h1>
-    <p class="subtitle">Ryūun's My Page (Temporary)</p>
+    <h1>みどり亭</h1>
+    <p class="subtitle">Midoritei Restaurant System</p>
     <div class="divider"></div>
 
     <div class="cards">
-      <a class="card" href="customer/customer.html">
+      <a class="card" href="customer.html">
         <span class="card-icon">📱</span>
-        <span class="card-label-jp">モバイルオーダー</span>
-        <span class="card-label-en">Mobile Order</span>
-        <span class="card-desc">テーブルからご注文・お会計・スタッフ呼び出し</span>
+        <span class="card-body">
+          <span class="card-label-jp">モバイルオーダー</span>
+          <span class="card-label-en">Mobile Order</span>
+          <span class="card-desc">テーブルからご注文・お会計・スタッフ呼び出し</span>
+        </span>
       </a>
 
-      <a class="card" href="staff/admin_index.html">
+      <a class="card" href="admin_index.html">
         <span class="card-icon">⚙️</span>
-        <span class="card-label-jp">管理システム</span>
-        <span class="card-label-en">Admin Console</span>
-        <span class="card-desc">商品・テーブル・注文の管理はこちら</span>
+        <span class="card-body">
+          <span class="card-label-jp">管理システム</span>
+          <span class="card-label-en">Admin Console</span>
+          <span class="card-desc">商品・テーブル・注文の管理はこちら</span>
+        </span>
       </a>
     </div>
   </div>
 
-  <footer>© 龍雲のマイページ（仮） &nbsp;|&nbsp; POS &amp; Order System</footer>
+  <footer>© みどり亭 &nbsp;|&nbsp; POS &amp; Order System</footer>
 
 </body>
 </html>
