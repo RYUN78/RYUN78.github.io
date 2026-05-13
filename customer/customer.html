@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>みどり亭 モバイルオーダー</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 全画面共通：時計＋ラストオーダータイマー -->
+  <div id="clock-bar">
+    <span id="clock-time"></span>
+    <span id="clock-lo"></span>
+    <span id="clock-nh" style="display:none"></span>
+  </div>
+
+  <div id="app"></div>
+
+  <!-- データ -->
+  <script src="data.js"></script>
+
+  <!-- 状態管理・共通ロジック（他より先に読む） -->
+  <script src="state.js"></script>
+
+  <!-- 各画面テンプレート＋イベント -->
+  <script src="screen_checkin.js"></script>
+  <script src="screen_menu.js"></script>
+  <script src="screen_qty.js"></script>
+  <script src="screen_cart.js"></script>
+  <script src="screen_history.js"></script>
+  <script src="screen_call.js"></script>
+  <script src="screen_error.js"></script>
+
+  <!-- イベント振り分け（全画面JSより後に読む） -->
+  <script src="events.js"></script>
+
+  <!-- 時計・ラストオーダータイマー -->
+  <script src="clock.js"></script>
+
+  <!-- 起動 -->
+  <script>
+    render();
+  </script>
+</body>
+</html>

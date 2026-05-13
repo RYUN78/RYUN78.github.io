@@ -1,0 +1,408 @@
+/* ===========================
+   リセット・ベース
+=========================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { width: 100%; height: 100%; }
+html { height: -webkit-fill-available; }
+
+body {
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  background: #dde3ea;
+  display: block;
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+#app {
+  width: 100%;
+  height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  background: #f4f6f8;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===========================
+   共通画面
+=========================== */
+.screen { width: 100%; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.adm-screen { background: #f4f6f8; }
+
+/* ===========================
+   ヘッダー
+=========================== */
+.adm-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: clamp(10px, 3vw, 14px) clamp(12px, 4vw, 18px);
+  border-bottom: 1px solid #d8dde3;
+  flex-shrink: 0;
+}
+.adm-header-title { display: flex; flex-direction: column; }
+.adm-store    { font-size: clamp(13px, 3.5vw, 16px); font-weight: 700; color: #1a1a1a; }
+.adm-subtitle { font-size: clamp(10px, 2.8vw, 13px); color: #666; margin-top: 1px; }
+.adm-header-icons { display: flex; gap: 8px; }
+.adm-icon-btn {
+  background: none; border: none;
+  font-size: clamp(18px, 5vw, 22px);
+  cursor: pointer; padding: 4px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.adm-plain-header {
+  background: #c8d4e0; color: #333;
+  font-size: clamp(14px, 4vw, 17px); font-weight: 600;
+  padding: clamp(10px, 3vw, 14px) clamp(14px, 4vw, 20px);
+  flex-shrink: 0;
+}
+
+/* ===========================
+   ログイン画面
+=========================== */
+.adm-login {
+  background: #fff;
+  align-items: center; justify-content: center;
+  gap: 5dvh;
+  padding: 6dvh 10vw;
+}
+.adm-login-title { text-align: center; }
+.adm-store-lg  { font-size: clamp(26px, 8vw, 36px); font-weight: 700; color: #1a1a1a; }
+.adm-sys-name  { font-size: clamp(13px, 3.8vw, 16px); color: #555; margin-top: 4px; }
+.adm-login-note {
+  font-size: clamp(10px, 2.8vw, 12px); color: #888;
+  text-align: center; background: #e8f0fe;
+  border-radius: 8px; padding: 10px 14px; line-height: 1.5;
+}
+
+/* ===========================
+   フォーム共通
+=========================== */
+.adm-form {
+  display: flex; flex-direction: column;
+  gap: clamp(14px, 4vw, 20px);
+  padding: clamp(16px, 5vw, 24px);
+}
+.adm-body    { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+.adm-scrollable { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+.adm-center  { align-items: center; justify-content: center; padding: clamp(24px, 8vw, 40px); gap: clamp(16px, 5vw, 24px); flex: 1; }
+.adm-field   { display: flex; flex-direction: column; gap: 4px; }
+.adm-label   { font-size: clamp(13px, 3.8vw, 15px); color: #333; font-weight: 500; }
+.adm-input {
+  border: 1px solid #bbb; border-radius: 6px;
+  padding: clamp(8px, 2.5vw, 11px) clamp(10px, 3vw, 14px);
+  font-size: clamp(13px, 3.8vw, 15px);
+  font-family: inherit; background: #fff; width: 100%; outline: none;
+}
+.adm-input:focus    { border-color: #4a7fc1; }
+.adm-input:disabled { background: #f0f0f0; color: #555; }
+.adm-textarea {
+  border: 1px solid #bbb; border-radius: 6px;
+  padding: clamp(8px, 2.5vw, 11px) clamp(10px, 3vw, 14px);
+  font-size: clamp(13px, 3.8vw, 15px);
+  font-family: inherit; background: #fff; width: 100%; outline: none;
+  resize: vertical;
+}
+.adm-required  { font-size: clamp(10px, 2.8vw, 12px); color: #c0392b; }
+.adm-optional  { font-size: clamp(10px, 2.8vw, 12px); color: #888; }
+.adm-field-note {
+  font-size: clamp(10px, 2.8vw, 12px); color: #555;
+  background: #e8f0fe; border-radius: 6px;
+  padding: 8px 12px; line-height: 1.5;
+}
+.adm-error { color: #c0392b; font-size: clamp(11px, 3.2vw, 13px); min-height: 18px; }
+
+/* ===========================
+   ボタン
+=========================== */
+.adm-btn-primary {
+  background: #4a7fc1; color: #fff;
+  border: none; border-radius: 8px;
+  padding: clamp(10px, 3vw, 14px) clamp(18px, 5vw, 28px);
+  font-size: clamp(14px, 4vw, 16px); font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.adm-btn-primary:active { background: #2e5fa3; }
+.adm-btn-primary.wide   { width: 100%; }
+
+.adm-btn-secondary {
+  background: #fff; color: #333;
+  border: 1px solid #bbb; border-radius: 8px;
+  padding: clamp(10px, 3vw, 14px) clamp(18px, 5vw, 28px);
+  font-size: clamp(14px, 4vw, 16px); font-weight: 500;
+  cursor: pointer; font-family: inherit;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.adm-btn-secondary:active { background: #eee; }
+.adm-btn-secondary.wide   { width: 100%; }
+
+.adm-row-btns {
+  display: flex; gap: clamp(10px, 3vw, 16px);
+  justify-content: center;
+  padding: clamp(12px, 3.5vw, 18px) clamp(16px, 5vw, 24px);
+  margin-top: auto; flex-shrink: 0;
+}
+
+/* ===========================
+   メニューリスト（大ボタン）
+=========================== */
+.adm-menu-list {
+  display: flex; flex-direction: column;
+  gap: clamp(10px, 3vw, 16px);
+  padding: clamp(16px, 5dvh, 32px) clamp(20px, 7vw, 36px);
+  flex: 1; justify-content: center; overflow-y: auto;
+}
+.adm-menu-btn {
+  width: 100%;
+  padding: clamp(14px, 4vw, 20px);
+  font-size: clamp(15px, 4.5vw, 18px); font-weight: 600;
+  border: 1.5px solid #bbb; border-radius: 10px;
+  background: #fff; cursor: pointer;
+  font-family: inherit; transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.adm-menu-btn:active          { background: #f0f0f0; }
+.adm-menu-btn.accent          { background: #4a7fc1; color: #fff; border-color: #4a7fc1; }
+.adm-menu-btn.accent:active   { background: #2e5fa3; }
+
+/* ===========================
+   モーダル
+=========================== */
+.adm-modal-wrap {
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(12px, 4vw, 20px); flex-shrink: 0;
+}
+.adm-modal {
+  background: #c8d4e0; border-radius: 12px;
+  padding: clamp(20px, 6vw, 28px) clamp(16px, 5vw, 24px);
+  width: clamp(220px, 70vw, 300px);
+  display: flex; flex-direction: column;
+  align-items: center; gap: clamp(14px, 4vw, 20px);
+}
+.adm-modal-msg  { font-size: clamp(14px, 4vw, 17px); font-weight: 600; text-align: center; color: #1a1a1a; }
+.adm-modal-btns { display: flex; gap: clamp(10px, 3vw, 16px); }
+
+/* ===========================
+   検索バー・結果リスト
+=========================== */
+.adm-search-bar {
+  display: flex; gap: 8px; align-items: center;
+  padding: clamp(10px, 3vw, 14px) clamp(12px, 4vw, 18px);
+  background: #4a7fc1; flex-shrink: 0;
+}
+.adm-search-bar .adm-input { flex: 1; background: #fff; }
+.adm-search-hint {
+  font-size: clamp(10px, 2.8vw, 12px); color: #fff;
+  background: #6a9fd1;
+  padding: 4px clamp(12px, 4vw, 18px); flex-shrink: 0;
+}
+.adm-result-list {
+  flex: 1; overflow-y: auto;
+  padding: clamp(8px, 2.5vw, 12px);
+  display: flex; flex-direction: column; gap: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+.adm-result-row {
+  display: flex; align-items: center;
+  gap: clamp(10px, 3vw, 14px);
+  padding: clamp(8px, 2.5vw, 12px) clamp(10px, 3vw, 14px);
+  background: #fff; border-radius: 6px;
+  font-size: clamp(13px, 3.8vw, 15px);
+  cursor: pointer; border: 1px solid #e0e0e0;
+}
+.adm-result-row input[type="checkbox"] { width: 18px; height: 18px; flex-shrink: 0; }
+.adm-empty { text-align: center; color: #aaa; padding: 32px; font-size: clamp(13px, 3.8vw, 15px); }
+
+/* ===========================
+   商品変更
+=========================== */
+.adm-change-section { display: flex; flex-direction: column; gap: 6px; padding: 0 clamp(16px, 5vw, 24px); }
+.adm-change-label   { font-size: clamp(12px, 3.5vw, 14px); color: #555; font-weight: 500; }
+.adm-change-tag {
+  display: inline-block; background: #4a7fc1; color: #fff;
+  border-radius: 16px; padding: 6px 16px;
+  font-size: clamp(13px, 3.8vw, 15px); font-weight: 500;
+}
+
+/* ===========================
+   テーブル管理 / QR
+=========================== */
+.adm-qr-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: clamp(10px, 3vw, 16px);
+  padding: clamp(16px, 5vw, 28px);
+  overflow: hidden;
+}
+.adm-qr-meta { font-size: clamp(12px, 3.5vw, 14px); color: #333; }
+.adm-qr-box {
+  background: #000;
+  width: clamp(140px, 40vw, 200px); height: clamp(140px, 40vw, 200px);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; flex-shrink: 0;
+}
+.adm-qr-fallback { color: #fff; font-size: clamp(14px, 4vw, 18px); font-weight: 600; }
+.adm-barcode-btn {
+  background: #333; color: #fff; border: none; border-radius: 8px;
+  padding: clamp(12px, 3.5vw, 16px) clamp(28px, 8vw, 48px);
+  font-size: clamp(15px, 4.5vw, 18px); font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+
+/* ===========================
+   注文系
+=========================== */
+.adm-table-badge {
+  font-size: clamp(12px, 3.5vw, 15px); font-weight: 600; color: #333;
+  padding: clamp(6px, 2vw, 10px) clamp(12px, 4vw, 18px);
+  background: #e0e8f0; text-align: right; flex-shrink: 0;
+}
+.adm-sub-header {
+  font-size: clamp(14px, 4vw, 16px); font-weight: 600;
+  padding: clamp(8px, 2.5vw, 12px) clamp(12px, 4vw, 18px);
+  background: #fff; border-bottom: 1px solid #ddd; flex-shrink: 0;
+}
+.adm-order-list {
+  flex: 1; overflow-y: auto;
+  padding: clamp(8px, 2.5vw, 12px);
+  display: flex; flex-direction: column; gap: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+.adm-order-row {
+  display: flex; align-items: center;
+  gap: clamp(8px, 2.5vw, 12px);
+  padding: clamp(8px, 2.5vw, 11px) clamp(10px, 3vw, 14px);
+  background: #fff; border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: clamp(13px, 3.8vw, 15px); cursor: pointer;
+}
+.adm-order-row input[type="checkbox"] { width: 18px; height: 18px; flex-shrink: 0; }
+.adm-order-name { flex: 1; }
+.adm-order-qty  { font-size: clamp(12px, 3.5vw, 14px); color: #555; }
+.adm-soldout-badge { font-size: 14px; }
+.adm-soldout    { color: #c0392b; text-decoration: line-through; }
+.adm-order-row-simple {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: clamp(8px, 2.5vw, 11px) clamp(10px, 3vw, 14px);
+  background: #fff; border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: clamp(13px, 3.8vw, 15px);
+}
+.adm-qty-ctrl { display: flex; gap: 12px; align-items: center; font-size: clamp(14px, 4vw, 16px); }
+
+/* ===========================
+   提供済み変更テーブル
+=========================== */
+.adm-offer-table-wrap {
+  flex: 1; overflow: auto;
+  padding: clamp(8px, 2.5vw, 12px);
+  -webkit-overflow-scrolling: touch;
+}
+.adm-offer-table {
+  width: 100%; border-collapse: collapse;
+  background: #fff; font-size: clamp(12px, 3.5vw, 14px);
+}
+.adm-offer-table th {
+  background: #4a7fc1; color: #fff;
+  padding: clamp(8px, 2.5vw, 11px) clamp(8px, 2.5vw, 12px);
+  text-align: center; font-weight: 600;
+}
+.adm-offer-table td {
+  padding: clamp(8px, 2.5vw, 11px) clamp(8px, 2.5vw, 12px);
+  border-bottom: 1px solid #eee; text-align: center;
+}
+.adm-offer-table tr:last-child td { border-bottom: none; }
+.adm-offer-table input[type="checkbox"] { width: 16px; height: 16px; }
+
+/* ===========================
+   スキャン画面
+=========================== */
+.adm-scan-msg { font-size: clamp(14px, 4vw, 17px); color: #333; text-align: center; }
+.adm-scan-area {
+  width: clamp(140px, 42vw, 200px); height: clamp(140px, 42vw, 200px);
+  border: 2.5px dashed #aaa; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(48px, 14vw, 72px); background: #f8f8f8;
+}
+
+/* ===========================
+   オーダー一覧
+=========================== */
+.adm-overview-grid {
+  flex: 1;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(8px, 2.5vw, 12px);
+  padding: clamp(10px, 3vw, 16px);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.adm-overview-card { background: #fff; border-radius: 8px; border: 1px solid #d8dde3; overflow: hidden; }
+.adm-overview-table {
+  background: #c8d4e0;
+  font-size: clamp(11px, 3.2vw, 13px); font-weight: 600;
+  padding: clamp(5px, 1.5vw, 8px) clamp(8px, 2.5vw, 12px); color: #333;
+}
+.adm-overview-items { padding: clamp(5px, 1.5vw, 8px); display: flex; flex-direction: column; gap: 3px; }
+.adm-overview-row   { font-size: clamp(10px, 2.8vw, 12px); color: #333; padding: 2px 4px; }
+.adm-overview-row.soldout { color: #c0392b; }
+
+/* ===========================
+   店員呼び出し
+=========================== */
+.adm-call-section {
+  flex: 1; display: flex; flex-direction: column;
+  padding: clamp(16px, 5vw, 28px); gap: clamp(14px, 4vw, 20px);
+  overflow-y: auto;
+}
+.adm-call-title { font-size: clamp(15px, 4.5vw, 18px); font-weight: 700; color: #333; text-align: center; }
+.adm-call-list  { display: flex; flex-direction: column; gap: clamp(10px, 3vw, 14px); }
+.adm-call-btn {
+  width: 100%;
+  padding: clamp(14px, 4vw, 18px);
+  font-size: clamp(15px, 4.5vw, 17px); font-weight: 600;
+  background: #c8d4e0; border: none; border-radius: 10px;
+  cursor: pointer; font-family: inherit;
+  transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.adm-call-btn:active { background: #a0b4c8; }
+
+/* ===========================
+   タッチ操作改善
+=========================== */
+button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+/* ===========================
+   全画面共通：戻るボタン
+=========================== */
+#global-back-btn {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 8px);
+  left: calc(env(safe-area-inset-left, 0px) + 10px);
+  z-index: 999;
+  width: clamp(36px, 10vw, 44px);
+  height: clamp(36px, 10vw, 44px);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  border: 1.5px solid #ccc;
+  font-size: clamp(16px, 5vw, 20px);
+  color: #333;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+#global-back-btn:active { background: #e8e8e8; }

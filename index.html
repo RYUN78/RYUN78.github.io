@@ -2,45 +2,270 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>みどり亭 モバイルオーダー</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>龍雲のマイページ（仮）</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-deep:  #1a3a2a;
+      --green-mid:   #2d5a3d;
+      --green-light: #4a8c5c;
+      --gold:        #c9a84c;
+      --gold-light:  #e8cc80;
+      --cream:       #f5f0e8;
+      --ink:         #1c1c1c;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--green-deep);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Noto Serif JP', serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 和紙テクスチャ風ノイズ背景 */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(74,140,92,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 70%, rgba(45,90,61,0.3) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    /* 流れる笹の葉装飾 */
+    .leaf {
+      position: fixed;
+      opacity: 0.07;
+      pointer-events: none;
+      animation: drift linear infinite;
+    }
+    .leaf svg { fill: var(--green-light); }
+    .leaf:nth-child(1)  { width: 80px;  top: -10%; left: 5%;   animation-duration: 18s; animation-delay: 0s; }
+    .leaf:nth-child(2)  { width: 50px;  top: -10%; left: 25%;  animation-duration: 24s; animation-delay: 6s; }
+    .leaf:nth-child(3)  { width: 70px;  top: -10%; left: 55%;  animation-duration: 20s; animation-delay: 3s; }
+    .leaf:nth-child(4)  { width: 40px;  top: -10%; left: 80%;  animation-duration: 16s; animation-delay: 9s; }
+    .leaf:nth-child(5)  { width: 90px;  top: -10%; left: 92%;  animation-duration: 22s; animation-delay: 1s; }
+
+    @keyframes drift {
+      0%   { transform: translateY(0)    rotate(0deg);   opacity: 0; }
+      5%   { opacity: 0.07; }
+      95%  { opacity: 0.07; }
+      100% { transform: translateY(110vh) rotate(60deg); opacity: 0; }
+    }
+
+    /* 中央コンテナ */
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      animation: fadeUp 1.2s cubic-bezier(.16,1,.3,1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 家紋風エンブレム */
+    .emblem {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 24px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: rotateSlow 30s linear infinite;
+    }
+    .emblem::before {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 50%;
+    }
+    .emblem-inner {
+      font-size: 36px;
+      animation: rotateSlow 30s linear infinite reverse;
+    }
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* 店名 */
+    h1 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(2.6rem, 8vw, 4rem);
+      font-weight: 600;
+      color: var(--cream);
+      letter-spacing: 0.35em;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+
+    .subtitle {
+      font-size: 0.75rem;
+      color: var(--gold-light);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+      opacity: 0.85;
+    }
+
+    /* 区切り線 */
+    .divider {
+      width: 160px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 48px;
+    }
+
+    /* カードグリッド */
+    .cards {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 0 16px;
+    }
+
+    .card {
+      display: block;
+      text-decoration: none;
+      width: 200px;
+      padding: 36px 24px 32px;
+      border: 1px solid rgba(201,168,76,0.35);
+      border-radius: 4px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(8px);
+      color: var(--cream);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.35s cubic-bezier(.16,1,.3,1),
+                  background 0.35s ease,
+                  border-color 0.35s ease;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.12) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    /* 角の和風装飾 */
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 16px; height: 16px;
+      border-top: 1px solid var(--gold);
+      border-right: 1px solid var(--gold);
+      opacity: 0.5;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(201,168,76,0.7);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+      display: block;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+    }
+
+    .card-label-jp {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.25rem;
+      letter-spacing: 0.2em;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .card-label-en {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      color: var(--gold-light);
+      opacity: 0.8;
+      display: block;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+
+    .card-desc {
+      font-size: 0.72rem;
+      color: rgba(245,240,232,0.55);
+      line-height: 1.7;
+      letter-spacing: 0.05em;
+    }
+
+    /* フッター */
+    footer {
+      position: fixed;
+      bottom: 20px;
+      font-size: 0.65rem;
+      color: rgba(245,240,232,0.25);
+      letter-spacing: 0.2em;
+      z-index: 1;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- 全画面共通：時計＋ラストオーダータイマー -->
-  <div id="clock-bar">
-    <span id="clock-time"></span>
-    <span id="clock-lo"></span>
-    <span id="clock-nh" style="display:none"></span>
+  <!-- 笹の葉 -->
+  <div class="leaf"><svg viewBox="0 0 60 120"><path d="M30 0 Q50 30 45 60 Q40 90 30 120 Q20 90 15 60 Q10 30 30 0Z"/></svg></div>
+  <div class="leaf"><svg viewBox="0 0 60 120"><path d="M30 0 Q50 30 45 60 Q40 90 30 120 Q20 90 15 60 Q10 30 30 0Z"/></svg></div>
+  <div class="leaf"><svg viewBox="0 0 60 120"><path d="M30 0 Q50 30 45 60 Q40 90 30 120 Q20 90 15 60 Q10 30 30 0Z"/></svg></div>
+  <div class="leaf"><svg viewBox="0 0 60 120"><path d="M30 0 Q50 30 45 60 Q40 90 30 120 Q20 90 15 60 Q10 30 30 0Z"/></svg></div>
+  <div class="leaf"><svg viewBox="0 0 60 120"><path d="M30 0 Q50 30 45 60 Q40 90 30 120 Q20 90 15 60 Q10 30 30 0Z"/></svg></div>
+
+  <div class="container">
+    <div class="emblem">
+      <span class="emblem-inner">🌿</span>
+    </div>
+
+    <h1>龍雲のマイページ（仮）</h1>
+    <p class="subtitle">Ryūun's My Page (Temporary)</p>
+    <div class="divider"></div>
+
+    <div class="cards">
+      <a class="card" href="customer/customer.html">
+        <span class="card-icon">📱</span>
+        <span class="card-label-jp">モバイルオーダー</span>
+        <span class="card-label-en">Mobile Order</span>
+        <span class="card-desc">テーブルからご注文・お会計・スタッフ呼び出し</span>
+      </a>
+
+      <a class="card" href="staff/admin_index.html">
+        <span class="card-icon">⚙️</span>
+        <span class="card-label-jp">管理システム</span>
+        <span class="card-label-en">Admin Console</span>
+        <span class="card-desc">商品・テーブル・注文の管理はこちら</span>
+      </a>
+    </div>
   </div>
 
-  <div id="app"></div>
+  <footer>© 龍雲のマイページ（仮） &nbsp;|&nbsp; POS &amp; Order System</footer>
 
-  <!-- データ -->
-  <script src="data.js"></script>
-
-  <!-- 状態管理・共通ロジック（他より先に読む） -->
-  <script src="state.js"></script>
-
-  <!-- 各画面テンプレート＋イベント -->
-  <script src="screen_checkin.js"></script>
-  <script src="screen_menu.js"></script>
-  <script src="screen_qty.js"></script>
-  <script src="screen_cart.js"></script>
-  <script src="screen_history.js"></script>
-  <script src="screen_call.js"></script>
-  <script src="screen_error.js"></script>
-
-  <!-- イベント振り分け（全画面JSより後に読む） -->
-  <script src="events.js"></script>
-
-  <!-- 時計・ラストオーダータイマー -->
-  <script src="clock.js"></script>
-
-  <!-- 起動 -->
-  <script>
-    render();
-  </script>
 </body>
 </html>
