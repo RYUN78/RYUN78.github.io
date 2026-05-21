@@ -116,3 +116,14 @@ const LAST_ORDER_TIME = '22:00'; // ← ここを変更
 ## 📄 ライセンス
 
 MIT
+
+### 使用ライブラリ
+
+| ライブラリ | ライセンス | 用途 |
+|---|---|---|
+| [JsBarcode](https://github.com/lindell/JsBarcode) | MIT | バーコード（Code128）生成 |
+
+---
+JsBarcode  
+Copyright (c) 2016 Johan Lindell  
+Released under the [MIT License](https://github.com/lindell/JsBarcode/blob/master/MIT-LICENSE.txt)
