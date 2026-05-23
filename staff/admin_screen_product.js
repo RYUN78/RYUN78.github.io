@@ -1,14 +1,34 @@
 // ===========================
+// カテゴリ選択肢
+// ===========================
+const PRODUCT_CATEGORIES = [
+  '焼鳥（たれ）',
+  '焼鳥（塩）',
+  '一品',
+  'デザート',
+  'シメ',
+  'ソフトドリンク',
+  'アルコール',
+  '飲み放題',
+  'その他',
+];
+
+// ===========================
 // 商品検索ウィジェット共通
 // ===========================
 function productSearchWidget(query, results, selectedIds) {
   return `
     <div class="adm-search-bar">
-      <input class="adm-input" id="product-search-input" type="text"
-        placeholder="名前（キーワード）を入れて検索" value="${query}">
+      <input class="adm-input" id="product-search-input" ...>
       <button class="adm-icon-btn" id="btn-product-search">🔍</button>
     </div>
-    <div class="adm-search-hint">名前（キーワード）入れて検索→結果が出てくる</div>
+    <div style="padding:6px 0 0;background:#4a7fc1">
+      <select class="adm-input" id="product-search-category" ...>   // ← 追加
+        <option value="">すべてのカテゴリー</option>
+        ${PRODUCT_CATEGORIES.map(cat => `<option ...>${cat}</option>`).join('')}
+      </select>
+    </div>
+    <div class="adm-search-hint">カテゴリーで絞り込み＋名前で検索できます</div>
     <div class="adm-result-list" id="product-result-list">
       ${results.map(p => `
         <label class="adm-result-row">
@@ -23,11 +43,31 @@ function productSearchWidget(query, results, selectedIds) {
 
 function attachProductSearchEvent() {
   document.getElementById('btn-product-search')?.addEventListener('click', () => {
-    const q = document.getElementById('product-search-input').value.trim();
-    adminState.productSearchQuery   = q;
-    adminState.productSearchResults = mockProducts.filter(p => p.name.includes(q) || !q);
-    adminRender();
+    _runProductSearch();
   });
+  // ↓ カテゴリー変更で即検索（追加）
+  document.getElementById('product-search-category')?.addEventListener('change', (e) => {
+    adminState.productSearchCategory = e.target.value;
+    _runProductSearch();
+  });
+  // ↓ Enterキーでも検索（追加）
+  document.getElementById('product-search-input')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') _runProductSearch();
+  });
+}
+
+// ↓ 検索ロジックを関数として切り出し（追加）
+function _runProductSearch() {
+  const q   = document.getElementById('product-search-input')?.value.trim() || '';
+  const cat = document.getElementById('product-search-category')?.value || '';
+  adminState.productSearchQuery    = q;
+  adminState.productSearchCategory = cat;
+  adminState.productSearchResults  = mockProducts.filter(p => {
+    const matchName = !q   || p.name.includes(q);
+    const matchCat  = !cat || p.category === cat;
+    return matchName && matchCat;
+  });
+  adminRender();
 }
 
 function syncCheckedProducts() {
@@ -55,8 +95,14 @@ function screenProductAdd() {
         </div>
         <div class="adm-field">
           <label class="adm-label">カテゴリー：</label>
-          <input class="adm-input" id="input-product-category" type="text">
+          <select class="adm-input" id="input-product-category">
+            <option value="">選択してください</option>
+            ${PRODUCT_CATEGORIES.map(cat => `<option value="${cat}">${cat}</option>`).join('')}
+          </select>
           <span class="adm-required">※ 必須</span>
+          <div id="input-product-category-other-wrap" style="display:none;margin-top:4px">
+            <input class="adm-input" id="input-product-category-other" type="text" placeholder="カテゴリー名を入力">
+          </div>
         </div>
         <div class="adm-field">
           <label class="adm-label">値段：</label>
@@ -66,6 +112,12 @@ function screenProductAdd() {
         <div class="adm-field">
           <label class="adm-label">写真：</label>
           <input class="adm-input" id="input-product-photo" type="text" placeholder="URL">
+          <span class="adm-optional">※ 任意</span>
+        </div>
+        <div class="adm-field">
+          <label class="adm-label">追記事項：</label>
+          <textarea class="adm-textarea" id="input-product-note" rows="3"
+            placeholder="アレルギー情報・説明文など（任意）"></textarea>
           <span class="adm-optional">※ 任意</span>
         </div>
         <div class="adm-error" id="product-add-error"></div>
@@ -88,7 +140,8 @@ function attachProductAddEvents() {
     const price = document.getElementById('input-product-price').value.trim();
     const err   = document.getElementById('product-add-error');
     if (!name || !cat || !price) { if (err) err.textContent = '必須項目を入力してください'; return; }
-    adminState.pendingProduct = { name, category: cat, price: parseInt(price) };
+    const note = document.getElementById('input-product-note').value.trim();
+    adminState.pendingProduct = { name, category: cat, price: parseInt(price), note };
     adminGoto('product_add_confirm');
   });
 }
@@ -109,6 +162,14 @@ function screenProductAddConfirm() {
         <div class="adm-field">
           <label class="adm-label">カテゴリー：</label>
           <input class="adm-input" type="text" value="${p.category || ''}" disabled>
+        </div>
+        <div class="adm-field">
+          <label class="adm-label">値段：</label>
+          <input class="adm-input" type="number" value="${p.price || ''}" disabled>
+        </div>
+        <div class="adm-field">
+          <label class="adm-label">追記事項：</label>
+          <textarea class="adm-textarea" rows="3" disabled>${p.note || ''}</textarea>
         </div>
         <div class="adm-modal-wrap">
           <div class="adm-modal">
@@ -134,7 +195,7 @@ function attachProductAddConfirmEvents() {
   document.getElementById('btn-add-confirm-yes')?.addEventListener('click', () => {
     const p   = adminState.pendingProduct;
     const newId = Math.max(...mockProducts.map(x => x.id)) + 1;
-    if (p) mockProducts.push({ id: newId, ...p, soldOut: false });
+    if (p) mockProducts.push({ id: newId, name: p.name, category: p.category, price: p.price, note: p.note || '', soldOut: false });
     adminGoto('menu_staff');
   });
   document.getElementById('btn-add-back2')?.addEventListener('click', () => adminGoto('product_add'));

@@ -8,6 +8,7 @@ const adminState = {
 
   // 商品管理
   productSearchQuery: '',
+  productSearchCategory: '',
   productSearchResults: [],
   selectedProducts: [],
   editTarget: null,

@@ -84,12 +84,14 @@ function attachMenuStaffEvents() {
   document.getElementById('btn-product-add')?.addEventListener('click', () => adminGoto('product_add'));
   document.getElementById('btn-product-delete')?.addEventListener('click', () => {
     adminState.productSearchQuery   = '';
+    adminState.productSearchCategory = '';
     adminState.productSearchResults = [];
     adminState.selectedProducts     = [];
     adminGoto('product_delete');
   });
   document.getElementById('btn-product-edit')?.addEventListener('click', () => {
     adminState.productSearchQuery   = '';
+    adminState.productSearchCategory = '';
     adminState.productSearchResults = [];
     adminGoto('product_edit_search');
   });
@@ -111,6 +113,7 @@ function screenMenuParttime() {
         <button class="adm-menu-btn" id="btn-offer">提供済み変更</button>
         <button class="adm-menu-btn" id="btn-overview">オーダー一覧</button>
         <button class="adm-menu-btn" id="btn-ledger">顧客台帳</button>
+        <button class="adm-btn-secondary wide" id="btn-parttime-back">戻る</button>
       </div>
     </div>
   `;
@@ -137,6 +140,7 @@ function attachMenuParttimeEvents() {
   });
   document.getElementById('btn-overview')?.addEventListener('click', () => adminGoto('order_overview'));
   document.getElementById('btn-ledger')?.addEventListener('click', () => adminGoto('customer_ledger'));
+  document.getElementById('btn-parttime-back')?.addEventListener('click', () => adminGoto('menu_staff'));
 }
 
 // ===========================

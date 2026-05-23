@@ -602,3 +602,15 @@ button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   letter-spacing: 0.1em;
   padding: 16px 8px;
 }
+
+
+/* 商品検索結果のカテゴリラベル */
+.adm-result-category {
+  font-size: clamp(9px, 2.5vw, 11px);
+  color: #fff;
+  background: #4a7fc1;
+  border-radius: 3px;
+  padding: 1px 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
