@@ -16,7 +16,7 @@ function screenTableMgmt() {
 }
 
 function attachTableMgmtEvents() {
-  document.getElementById('btn-table-mgmt-back')?.addEventListener('click', () => adminGoBack());
+  document.getElementById('btn-table-mgmt-back')?.addEventListener('click', () =>  adminGoto('menu_parttime'));
   document.getElementById('btn-qr-gen')?.addEventListener('click', () => adminGoto('table_qr_confirm'));
   document.getElementById('btn-table-no-change')?.addEventListener('click', () => adminGoto('table_no_change'));
   document.getElementById('btn-qr-reissue')?.addEventListener('click', () => adminGoto('table_reissue'));
